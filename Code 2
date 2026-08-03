@@ -1,0 +1,177 @@
+# --------------------------------------------
+# PATTERN 1: SINGLETON (only one instance ever exists)
+# --------------------------------------------
+class WiFiRouter:
+_instance = None # class attribute, shared by every instance
+def __new__(cls): # __new__ runs before __init__; it CREATES the object
+if cls._instance is None: # no instance yet? this is the first call
+cls._instance = super().__new__(cls) # create the one-and-only instance and cache
+it
+cls._instance.connected_devices = [] # set up its device list (only happens once)
+return cls._instance # always hand back that same cached instance
+def connect(self, device):
+self.connected_devices.append(device)
+print("---- 1. SINGLETON ----")
+papa_phone = WiFiRouter()
+my_laptop = WiFiRouter()
+papa_phone.connect("Papa's Phone")
+my_laptop.connect("My Laptop")
+print("Same router?", papa_phone is my_laptop)
+print("Devices:", my_laptop.connected_devices)
+# --------------------------------------------
+# PATTERN 2: FACTORY (ask by name, get the matching object)
+# --------------------------------------------
+class FrenchLocalizer:
+def __init__(self):
+self.words = {"car": "voiture", "bike": "bicyclette"}
+def localize(self, msg):
+return self.words.get(msg, msg) # fallback: unknown words pass through
+unchanged
+class SpanishLocalizer:
+def __init__(self):
+self.words = {"car": "coche", "bike": "bicicleta"}
+def localize(self, msg):
+return self.words.get(msg, msg) class EnglishLocalizer:
+def localize(self, msg):
+return msg # no translation needed, pass it straight through
+def language_factory(language="English"): # THE factory - a single entry point for all
+objects
+localizers = {
+"French": FrenchLocalizer,
+"Spanish": SpanishLocalizer,
+"English": EnglishLocalizer,
+}
+return localizers[language]() # note the () - this is what actually builds the object
+print("\n---- 2. FACTORY ----")
+f = language_factory("French")
+s = language_factory("Spanish")
+print("car in French :", f.localize("car"))
+print("car in Spanish:", s.localize("car"))
+# --------------------------------------------
+# PATTERN 3: OBSERVER (one publishes, everyone gets notified)
+# --------------------------------------------
+class Blog: # the SUBJECT being watched (think: a YouTube channel)
+def __init__(self, name):
+self.name = name
+self._subscribers = [] # holds every registered observer
+def subscribe(self, subscriber):
+self._subscribers.append(subscriber)
+print(subscriber.email, "subscribed to", self.name)
+def publish(self, title): # one publish event...
+print(self.name, "published:", title)
+for sub in self._subscribers: # ...triggers a notification for every subscriber
+sub.notify(self.name, title)
+class Reader: # the OBSERVER (think: a subscriber)
+def __init__(self, email):
+self.email = email
+def notify(self, blog_name, title): # invoked by the Blog, never called directly
+print(" Email to", self.email, ": new post -", title) print("\n---- 3. OBSERVER ----")
+blog = Blog("DevDaily")
+blog.subscribe(Reader("anna@mail.com"))
+blog.subscribe(Reader("raj@mail.com"))
+blog.publish("10 Python Tips")
+# --------------------------------------------
+# PATTERN 4: STRATEGY (swap the algorithm at runtime)
+# --------------------------------------------
+from abc import ABC, abstractmethod
+class PaymentStrategy(ABC): # the shared CONTRACT every strategy must
+follow
+@abstractmethod
+def pay(self, amount):
+pass
+class UPI(PaymentStrategy):
+def pay(self, amount):
+return f"Paid Rs.{amount} via UPI"
+class Card(PaymentStrategy):
+def pay(self, amount):
+return f"Paid Rs.{amount} via Card"
+class Checkout: # the CONTEXT - delegates to a strategy, doesn't care
+which
+def __init__(self, strategy: PaymentStrategy):
+self.strategy = strategy # store whichever strategy we're handed
+def set_strategy(self, strategy): # swap the algorithm at runtime, no other code
+changes
+self.strategy = strategy
+def pay(self, amount):
+return self.strategy.pay(amount) # hand off the real work to the current strategy
+print("\n---- 4. STRATEGY ----")
+cart = Checkout(UPI())
+print(cart.pay(500)) c
+a
+r
+t.s
+e
+t_
+s
+t
+r
+a
+t
+e
+g
+y
+(
+C
+a
+r
+d
+(
+)
+)
+#
+s
+w
+a
+p
+p
+a
+y
+m
+e
+n
+t
+m
+e
+t
+h
+o
+d, C
+h
+e
+c
+k
+o
+u
+t it
+s
+elf
+s
+t
+a
+y
+s
+u
+n
+c
+h
+a
+n
+g
+e
+d
+p
+rin
+t
+(
+c
+a
+r
+t.p
+a
+y
+(
+5
+0
+0
+)
+)
