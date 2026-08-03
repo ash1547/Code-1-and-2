@@ -1,0 +1,48 @@
+from abc import ABC, abstractmethod
+class Strategy(ABC):
+@abstractmethod
+def execute_strategy(self):
+pass
+class ConcreteStrategyA(Strategy):
+def execute_strategy(self):
+return "Going by car", "30 mins"
+class ConcreteStrategyB(Strategy):
+def execute_strategy(self):
+return "Going by bus", "45 mins"
+class ConcreteStrategyC(Strategy):
+def execute_strategy(self):
+return "Going by bicycle", "60 mins"
+class ConcreteStrategyD(Strategy):
+def execute_strategy(self):
+return "Going by train", "25 mins"
+class Context:
+def __init__(self, strategy=None):
+self._strategy = strategy
+def set_strategy(self, strategy):
+self._strategy = strategy
+def execute_strategy(self):
+if self._strategy:
+return self._strategy.execute_strategy()
+return "No strategy chosen", "0 mins"
+# --- Choice mechanism using if/elif ---
+def choose_transport():
+print("Select transport mode:")
+print("1. Car\n2. Bus\n3. Bicycle\n4. Train")
+choice = input("Enter choice (1-4): ")
+if choice == "1":
+selected_strategy = ConcreteStrategyA()
+elif choice == "2":
+selected_strategy = ConcreteStrategyB()
+elif choice == "3":
+selected_strategy = ConcreteStrategyC() elif choice == "4":
+selected_strategy = ConcreteStrategyD()
+else:
+print("Invalid choice!")
+return
+# Pass the selected strategy to Context
+trip = Context(selected_strategy)
+mode, time_taken = trip.execute_strategy()
+print(f"\nResult: {mode}")
+print(f"Time Taken: {time_taken}")
+# Run the choice selection
+choose_transport()
